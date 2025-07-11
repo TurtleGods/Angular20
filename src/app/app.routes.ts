@@ -4,13 +4,22 @@ import { MemberDetailed } from './../features/members/member-detailed/member-det
 import { Routes } from '@angular/router';
 import { Home } from '../features/home/home';
 import { MemberList } from '../features/members/member-list/member-list';
+import { authGuard } from '../core/guards/auth-guard';
 
 export const routes: Routes = [
     {path:'',component:Home},
-    {path:'members',component:MemberList},
-    {path:'members/:id',component:MemberDetailed},
-    {path:'lists',component:Lists},
-    {path:'messages',component:Messages},
+        {
+        path:'',
+        runGuardsAndResolvers:'always',
+        canActivate:[authGuard],
+        children:[
+            {path: 'members', component:MemberList},
+            {path: 'members/:username', component:MemberDetailed},
+            {path: 'lists', component:Lists},
+            {path: 'messages', component:Messages},
+        
+        ]
+    },
     {path:'**',component:Home}
     
 ];
