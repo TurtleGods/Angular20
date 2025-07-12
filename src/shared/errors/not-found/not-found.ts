@@ -11,6 +11,6 @@ export class NotFound {
   private location = inject(Location);
 
   goBack(){
-    this.location.back();
+  this.location.back();
   }
 }
