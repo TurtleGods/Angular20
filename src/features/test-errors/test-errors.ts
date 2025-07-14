@@ -8,7 +8,7 @@ import { Component, inject, signal } from '@angular/core';
   styleUrl: './test-errors.css'
 })
 export class TestErrors {
-  baseUrl = environment.apiUrl;
+  baseUrl = 'https://localhost:5001/api/';
   private http = inject(HttpClient);
   validationErrors=signal<string[]>([]);
   get400Error() {
