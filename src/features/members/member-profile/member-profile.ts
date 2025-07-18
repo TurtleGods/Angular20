@@ -1,5 +1,4 @@
 import { Component, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { EditableMember, Member } from '../../../types/memer';
 import { DatePipe } from '@angular/common';
 import { MemberService } from '../../../core/services/member-service';
