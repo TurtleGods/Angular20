@@ -34,7 +34,9 @@
             </label>
             <div class="flex items-center justifty-end gap-3">
                 <button class="btn" (click)="cancel()" type="button">Cancel</button>
-                <button class="btn btn-primary" type="submit">Register</button>
+                <button   
+                    [disabled]="registerForm.invalid" 
+                    class="btn btn-primary" type="submit">Register</button>
             </div>
         </form>
     </div>
