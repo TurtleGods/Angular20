@@ -1,12 +1,13 @@
 import { Component, inject, input, OnInit, output } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { RegisterCreds, User } from '../../../types/User';
+import { RegisterCreds } from '../../../types/User';
 import { AccountService } from '../../../core/services/account-service';
 import { JsonPipe } from '@angular/common';
+import { TextInput } from "../../../shared/text-input/text-input";
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, JsonPipe],
+  imports: [ReactiveFormsModule, JsonPipe, TextInput],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
@@ -26,9 +27,9 @@ export class Register implements OnInit {
 
   initializeForm() {
     this.registerForm = new FormGroup({
-      email: new FormControl("just@mail.com",[Validators.required,Validators.email]),
-      displayName: new FormControl('',[Validators.required,Validators.minLength(4),Validators.maxLength(8)]),
-      password: new FormControl('',Validators.required),
+      email: new FormControl('',[Validators.required,Validators.email]),
+      displayName: new FormControl('',[Validators.required]),
+      password: new FormControl('',[Validators.required,Validators.minLength(4),Validators.maxLength(8)]),
       confirmPassword: new FormControl('',[Validators.required,this.matchValues('password')]),
     });
     this.registerForm.controls['password'].valueChanges.subscribe(() => {

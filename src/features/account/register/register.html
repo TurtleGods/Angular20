@@ -2,47 +2,15 @@
     <div class="card-title justify-center text-3xl text-primary">Sign up</div>
     <div class="card-body w-full">
         <form [formGroup]="registerForm" class="flex flex-col gap-4 w-full" (ngSubmit)="register()">
-            <label class="floating-label">
-                <span>Email</span>
-                <input 
-                    class="input w-full" 
-                    formControlName="email"
-                    placeholder="Email">
-            </label>
-            <label class="floating-label text-left">
-                <span>Display name</span>
-                <input 
-                    class="input w-full" 
-                    [class.input-error]="registerForm.controls['displayName'].invalid
-                        &&registerForm.controls['displayName'].touched"
-                    formControlName="displayName"
-                    placeholder="Display name">
-                    @if(registerForm.controls['displayName'].invalid
-                        &&registerForm.controls['displayName'].touched){
-                            <div class="validation-hint text-error text-xs">Display name is required</div>
-                        }
-            </label>
-            <label class="floating-label">
-                <span>Password</span>
-                <input 
-                    class="input w-full" 
-                    type="password"
-                    formControlName="password"
-                    placeholder="Password">
-            </label>
-            <label class="floating-label">
-                <span>Confirm Password</span>
-                <input 
-                    type="password"
-                    class="input w-full" 
-                    formControlName="confirmPassword"
-                    placeholder="Confirm Password">
-            </label>
-            <div class="flex items-center justifty-end gap-3">
+
+            <app-text-input label="Email" formControlName="email"></app-text-input>
+            <app-text-input label="Display name" formControlName="displayName"></app-text-input>
+            <app-text-input label="Password" formControlName="password" type="password"></app-text-input>
+            <app-text-input label="Confirm Password" formControlName="confirmPassword" type="password"></app-text-input>
+
+            <div class="flex items-center justify-end gap-3">
                 <button class="btn" (click)="cancel()" type="button">Cancel</button>
-                <button   
-                    [disabled]="registerForm.invalid" 
-                    class="btn btn-primary" type="submit">Register</button>
+                <button [disabled]="registerForm.invalid" class="btn btn-primary" type="submit">Register</button>
             </div>
         </form>
     </div>
