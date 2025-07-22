@@ -19,7 +19,7 @@ export class Nav implements OnInit {
   private toast = inject(ToastService);
   private router = inject(Router);
   protected creds: any = {}
-  protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light');
+  protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'LIGHT');
   protected themes = themes;
 
   ngOnInit(): void {
@@ -27,7 +27,7 @@ export class Nav implements OnInit {
   }
 
   handleSelectTheme(theme: string) {
-    this.selectedTheme.set(theme);
+    this.selectedTheme.set(theme.toUpperCase());
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
     const elem=document.activeElement as HTMLDivElement;//選取完之後，會結束dropdown

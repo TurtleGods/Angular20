@@ -4,6 +4,7 @@ import { RegisterCreds } from '../../../types/User';
 import { AccountService } from '../../../core/services/account-service';
 import { JsonPipe } from '@angular/common';
 import { TextInput } from "../../../shared/text-input/text-input";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -13,12 +14,15 @@ import { TextInput } from "../../../shared/text-input/text-input";
 })
 export class Register  {
   private accountService = inject(AccountService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
   cancelRegister = output<boolean>();
   protected creds = {} as RegisterCreds;
   protected credentialsForm: FormGroup;
   protected profileForm: FormGroup;
   protected currentStep = signal(1);
+  protected validationErrors=signal<string[]>([]);
+
   constructor() {
     this.credentialsForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -28,7 +32,7 @@ export class Register  {
     });
 
     this.profileForm = this.fb.group({
-      gender: ['', [Validators.required]],
+      gender: ['male', [Validators.required]],
       dateOfBirth: ['', [Validators.required]],
       city: ['', [Validators.required]],
       country: ['', [Validators.required]]
@@ -49,11 +53,28 @@ export class Register  {
     this.currentStep.update(prevstep=>prevstep-1);
   }
 
+  getMaxDate() {
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 18); // Set to 18 years ago
+    return today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+  }
+
   register() {
     if(this.profileForm.valid&&this.credentialsForm.valid){
       const formData = {...this.credentialsForm.value, ...this.profileForm.value};
-      console.log('Form data: ', formData);
+      this.accountService.register(formData).subscribe({
+        next:()=>{
+          this.router.navigateByUrl('/members');
+          this.cancel()
+        },
+        error:error=>{
+          console.log(error),
+          this.validationErrors.set(error)
+        }
+      })
     }
+
+
   }
 
   matchValues(matchTo: string): ValidatorFn {
