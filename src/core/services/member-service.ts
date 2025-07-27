@@ -14,24 +14,24 @@ export class MemberService {
   editMode = signal(false);
   member = signal<Member | null>(null);
 
-  getMembers(memberParams:MemberParams) {
+  getMembers(memberParams: MemberParams) {
     let params = new HttpParams();
 
-    params = params.append('pageNumber',memberParams.pageNumber);
-    params = params.append('pageSize',memberParams.pageSize);
-    params = params.append('minAge',memberParams.minAge);
-    params = params.append('maxAge',memberParams.maxAge);
-    params = params.append('orderBy',memberParams.orderBy);
-    if(memberParams.gender) {
-      params = params.append('gender',memberParams.gender);
+    params = params.append('pageNumber', memberParams.pageNumber);
+    params = params.append('pageSize', memberParams.pageSize);
+    params = params.append('minAge', memberParams.minAge);
+    params = params.append('maxAge', memberParams.maxAge);
+    params = params.append('orderBy', memberParams.orderBy);
+    if (memberParams.gender) {
+      params = params.append('gender', memberParams.gender);
     }
-    
+
 
     return this.http.get<PaginatedResult<Member>>(this.baseUrl + 'members', { params }).pipe(
-      tap(()=>{
-        localStorage.setItem('filters',JSON.stringify(memberParams))
+      tap(() => {
+        localStorage.setItem('filters', JSON.stringify(memberParams))
       })
-    );
+    )
   }
 
   getMember(id: string) {
@@ -50,16 +50,16 @@ export class MemberService {
     return this.http.put(this.baseUrl + 'members', member);
   }
 
-  uploadPhoto(file:File){
+  uploadPhoto(file: File) {
     const formData = new FormData();
-    formData.append('file',file);
+    formData.append('file', file);
     return this.http.post<Photo>(this.baseUrl + 'members/add-photo', formData)
   }
-  setMainPhoto(photo:Photo){
+  setMainPhoto(photo: Photo) {
     return this.http.put(this.baseUrl + 'members/set-main-photo/' + photo.id, {});
   }
 
-  deletePhoto(photoId:number){
+  deletePhoto(photoId: number) {
     return this.http.delete(this.baseUrl + 'members/delete-photo/' + photoId);
   }
 }
