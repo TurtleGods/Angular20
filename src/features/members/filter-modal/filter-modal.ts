@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, model, output, ViewChild } from '@angular/core';
+import { Component, ElementRef, model, output, ViewChild } from '@angular/core';
 import { MemberParams } from '../../../types/member';
 import { FormsModule } from '@angular/forms';
 

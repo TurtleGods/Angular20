@@ -21,8 +21,8 @@ export class MemberList implements OnInit {
 
   constructor() {
     const filters = localStorage.getItem('filters');
-    if(filters){
-      this.memberParams=JSON.parse(filters);
+    if (filters) {
+      this.memberParams = JSON.parse(filters);
       this.updatedParams = JSON.parse(filters);
     }
   }
