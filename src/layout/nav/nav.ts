@@ -30,7 +30,7 @@ export class Nav implements OnInit {
     this.selectedTheme.set(theme);
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
-    const elem=document.activeElement as HTMLDivElement;//選取完之後，會結束dropdown
+    const elem = document.activeElement as HTMLDivElement;//選取完之後，會結束dropdown
     if (elem) elem.blur();
   }
 
@@ -48,6 +48,8 @@ export class Nav implements OnInit {
   }
 
   logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('filters');
     this.accountService.logout();
   }
 
