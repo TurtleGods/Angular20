@@ -33,9 +33,9 @@ export class MemberList implements OnInit {
   loadMembers() {
     this.memberService.getMembers(this.memberParams).subscribe({
       next: result => {
-        this.paginatedMembers.set(result);
+        this.paginatedMembers.set(result)
       }
-    });
+    })
   }
 
   onPageChange(event: { pageNumber: number, pageSize: number }) {
