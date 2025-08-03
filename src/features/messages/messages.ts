@@ -8,7 +8,7 @@ import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-messages',
-  imports: [Paginator,RouterLink,DatePipe],
+  imports: [Paginator, RouterLink, DatePipe],
   templateUrl: './messages.html',
   styleUrl: './messages.css'
 })
@@ -38,21 +38,32 @@ export class Messages implements OnInit {
     });
   }
 
-  deleteMessage(event:Event,id:string){
+  deleteMessage(event: Event, id: string) {
     event.stopPropagation();
     this.messageService.deleteMessage(id).subscribe({
-      next:()=>{
+      next: () => {
         const current = this.paginatedMessages();
-        if(current?.items){
-          this.paginatedMessages.update(prev=>{
-            if(!prev) return null;
-
-            const newItems = prev.items.filter(x=>x.id!==id)||[];
+        if (current?.items) {
+          this.paginatedMessages.update(prev => {
+            if (!prev || !prev.metadata) return null;
+  
+            const newItems = prev.items?.filter(x => x.id !== id) || [];
+            const newMetadata ={
+              ...prev.metadata,
+              totalCount: prev.metadata.totalCount - 1,
+              totalPages: Math.max(1, Math.ceil((prev.metadata.totalCount - 1) /
+                prev.metadata.pageSize)),
+              currentPage: Math.min(
+                prev.metadata.currentPage,
+                Math.max(1, Math.ceil((prev.metadata.totalCount - 1) /
+                  prev.metadata.pageSize))
+              )
+            };
 
             return {
-              items:newItems,
-              metadata:prev.metadata,
-            }
+              items: newItems,
+              metadata: newMetadata,
+            };
           })
         }
       }
