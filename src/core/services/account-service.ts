@@ -16,33 +16,48 @@ export class AccountService {
   baseUrl = environment.apiUrl;
 
   register(creds: RegisterCreds) {
-    return this.http.post<User>(this.baseUrl + 'account/register', creds).pipe(
+    return this.http.post<User>(this.baseUrl + 'account/register', creds,{withCredentials:true}).pipe(
       tap(user => {
         if (user) {
           this.setCurrentUser(user);
+          this.startTokenRefreshInterval();
         }
       })
     );
   }
   login(creds: any) {
-    return this.http.post<User>(this.baseUrl + 'account/login', creds).pipe(
+    return this.http.post<User>(this.baseUrl + 'account/login', creds,{withCredentials:true}).pipe(
       tap(user => {
         if (user) {
           this.setCurrentUser(user);
+          this.startTokenRefreshInterval();
         }
       })
     );
   }
 
+  refreshToken(){
+    return this.http.post<User>(this.baseUrl + 'account/refresh-token',{},{withCredentials:true});
+  }
+
+  startTokenRefreshInterval(){
+    setInterval(() => {
+      this.http.post<User>(this.baseUrl + 'account/refresh-token',{},{withCredentials:true}).subscribe({
+        next:user=>{
+          this.setCurrentUser(user)
+        },
+        error:()=>this.logout()
+      });
+    }, 5*60*1000 );//300 seconds
+  }
+
   setCurrentUser(user: User) {
     user.roles = this.getRolesFromToken(user);
-    localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
     this.likeService.getLikeIds();
   }
 
   logout() {
-    localStorage.removeItem('user');
     localStorage.removeItem('filters');
     this.likeService.clearLikeIds();
     this.currentUser.set(null);
