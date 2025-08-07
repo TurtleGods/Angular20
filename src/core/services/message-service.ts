@@ -14,32 +14,37 @@ export class MessageService {
   private hubUrl = environment.hubUrl;
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
-  private HubConnection?:HubConnection;
+  private hubConnection?:HubConnection;
   messageThread = signal<Message[]>([]);
 
   createHubConnection(otherUserId:string){
     const currentUser = this.accountService.currentUser();
-    if(!currentUser)return;
-    this.HubConnection = new HubConnectionBuilder()
-    .withUrl(this.hubUrl+'messages?userId=' +otherUserId,{//這邊為query String 用法
-      accessTokenFactory:()=>currentUser.token
-    })
-    .withAutomaticReconnect()
-    .build();
+    if (!currentUser) return;
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(this.hubUrl + 'messages?userId=' + otherUserId, {//QueryString作為條件用法
+        accessTokenFactory: () => currentUser.token
+      })
+      .withAutomaticReconnect()
+      .build();
 
-    this.HubConnection.start().catch(error=>console.log(error));
+    this.hubConnection.start().catch(error => console.log(error));
 
-    this.HubConnection.on('ReceiveMessageThread',(messages:Message[])=>{
+    this.hubConnection.on('ReceiveMessageThread', (messages: Message[]) => {
       this.messageThread.set(messages.map(message => ({
           ...message,
           currentUserSender: message.senderId !== otherUserId
         })))
-    })
+    });
+
+    this.hubConnection.on('NewMessage', (message: Message) => {
+      message.currentUserSender = message.senderId === currentUser.id;
+      this.messageThread.update(messages => [...messages, message])
+    });
   }
 
   stopHubConnection(){
-    if(this.HubConnection?.state ===HubConnectionState.Connected){
-      this.HubConnection.stop().catch(error=>console.log(error));
+    if(this.hubConnection?.state ===HubConnectionState.Connected){
+      this.hubConnection.stop().catch(error=>console.log(error));
     }
   }
 
