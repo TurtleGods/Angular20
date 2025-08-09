@@ -19,7 +19,7 @@ export class AccountService {
   private baseUrl = environment.apiUrl;
 
   register(creds: RegisterCreds) {
-    return this.http.post<User>(this.baseUrl + 'account/register', creds,{withCredentials:true}).pipe(
+    return this.http.post<User>(this.baseUrl + 'account/register', creds, { withCredentials: true }).pipe(
       tap(user => {
         if (user) {
           this.setCurrentUser(user);
@@ -29,7 +29,7 @@ export class AccountService {
     );
   }
   login(creds: any) {
-    return this.http.post<User>(this.baseUrl + 'account/login', creds,{withCredentials:true}).pipe(
+    return this.http.post<User>(this.baseUrl + 'account/login', creds, { withCredentials: true }).pipe(
       tap(user => {
         if (user) {
           this.setCurrentUser(user);
@@ -39,35 +39,40 @@ export class AccountService {
     );
   }
 
-  refreshToken(){
-    return this.http.post<User>(this.baseUrl + 'account/refresh-token',{},{withCredentials:true});
+  refreshToken() {
+    return this.http.post<User>(this.baseUrl + 'account/refresh-token', {}, { withCredentials: true });
   }
 
-  startTokenRefreshInterval(){
+  startTokenRefreshInterval() {
     setInterval(() => {
-      this.http.post<User>(this.baseUrl + 'account/refresh-token',{},{withCredentials:true}).subscribe({
-        next:user=>{
+      this.http.post<User>(this.baseUrl + 'account/refresh-token', {}, { withCredentials: true }).subscribe({
+        next: user => {
           this.setCurrentUser(user)
         },
-        error:()=>this.logout()
+        error: () => this.logout()
       });
-    }, 5*60*1000 );//300 seconds
+    }, 5 * 60 * 1000);//300 seconds
   }
 
   setCurrentUser(user: User) {
     user.roles = this.getRolesFromToken(user);
     this.currentUser.set(user);
     this.likeService.getLikeIds();
-    if(this.presenceService.hubConnection?.state !== HubConnectionState.Connected){
+    if (this.presenceService.hubConnection?.state !== HubConnectionState.Connected) {
       this.presenceService.createHubConnection(user);
     }
   }
 
   logout() {
-    localStorage.removeItem('filters');
-    this.likeService.clearLikeIds();
-    this.currentUser.set(null);
-    this.presenceService.stopHubConnection();
+    this.http.post(this.baseUrl + 'account/logout', {}, { withCredentials: true }).subscribe({
+      next: () => {
+        localStorage.removeItem('filters');
+        this.likeService.clearLikeIds();
+        this.currentUser.set(null);
+        this.presenceService.stopHubConnection();
+      }
+    })
+
   }
   private getRolesFromToken(user: User): string[] {
     const payload = user.token.split('.')[1];
