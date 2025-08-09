@@ -9,7 +9,7 @@ import { HasRole } from '../../shared/directive/has-role';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule, RouterLink, RouterLinkActive,HasRole],
+  imports: [FormsModule, RouterLink, RouterLinkActive, HasRole],
   templateUrl: './nav.html',
   styleUrl: './nav.css'
 })
@@ -36,6 +36,12 @@ export class Nav implements OnInit {
     if (elem) elem.blur();
   }
 
+  handleSelectUserItem() {
+    const elem = document.activeElement as HTMLDivElement;//選取完之後，會結束dropdown
+
+    if (elem) elem.blur();
+
+  }
   login() {
     this.loading.set(true);
     this.accountService.login(this.creds).subscribe({
@@ -47,7 +53,7 @@ export class Nav implements OnInit {
       error: error => {
         this.toast.error(error.error);
       },
-      complete:()=>this.loading.set(false)
+      complete: () => this.loading.set(false)
     });
   }
 
