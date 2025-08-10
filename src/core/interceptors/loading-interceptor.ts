@@ -2,7 +2,7 @@ import { HttpEvent, HttpInterceptorFn, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { BusyService } from '../services/busy-service';
 import { delay, finalize, identity, of, tap } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 const cache = new Map<string, HttpEvent<unknown>>();
 

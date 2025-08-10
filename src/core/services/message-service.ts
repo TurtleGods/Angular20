@@ -1,6 +1,6 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { inject, Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PaginatedResult } from '../../types/pagination';
 import { Message } from '../../types/message';
